@@ -1,0 +1,58 @@
+services:
+  # Base de Datos (Requisito de persistencia para la evaluación)
+  db:
+    image: mysql:8.0
+    container_name: db-innovatech
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: myapp_db
+    volumes:
+      - db_data:/var/lib/mysql # Aquí se guardan los datos (Persistencia)
+    networks:
+      - innova-net
+
+  # Backend de Ventas
+  ventas-back:
+    build: ./back-Ventas_SpringBoot
+    container_name: ventas-service
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/myapp_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root_password
+    networks:
+      - innova-net
+
+  # Backend de Despachos
+  despachos-back:
+    build: ./back-Despachos_SpringBoot
+    container_name: despachos-service
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/myapp_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root_password
+    networks:
+      - innova-net
+
+  # Frontend
+  frontend:
+    build: ./front_despacho
+    container_name: frontend-app
+    ports:
+      - "80:80"
+    depends_on:
+      - ventas-back
+      - despachos-back
+    networks:
+      - innova-net
+
+# Definición de recursos globales
+volumes:
+  db_data: # Este es el volumen que mencionas en la PPT para persistencia
+
+networks:
+  innova-net:
+    driver: bridge
