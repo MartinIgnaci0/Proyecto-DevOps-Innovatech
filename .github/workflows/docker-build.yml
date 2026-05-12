@@ -1,0 +1,18 @@
+name: CI Innovatech Build
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Probar construcción de Docker
+        run: |
+          echo "Iniciando construcción de imágenes..."
+          docker build ./front-despacho -t front-test
+          echo "Frontend construido con éxito"
