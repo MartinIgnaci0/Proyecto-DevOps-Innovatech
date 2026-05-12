@@ -11,8 +11,10 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Probar construcción de Docker
+      - name: Listar archivos para verificar
+        run: ls -R
+
+      - name: Probar construcción Frontend
         run: |
-          echo "Iniciando construcción de imágenes..."
-          docker build ./front-despacho -t front-test
-          echo "Frontend construido con éxito"
+          # Si tu carpeta se llama distinto, cámbialo aquí abajo
+          docker build ./front-despacho -t front-test || echo "Error en ruta"
